@@ -1,26 +1,18 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Sketch from "react-p5/@types";
+import type P5 from "p5";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+  const setup = (p5: P5, parent: Element) => {
+    p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(parent);
+  };
+
+  const draw = (p5: P5) => {
+    p5.background(0);
+    p5.clear();
+
+    p5.ellipse(400, 400, 50);
+  };
+
+  return <Sketch setup={setup} draw={draw}></Sketch>;
 }
-
-export default App;
