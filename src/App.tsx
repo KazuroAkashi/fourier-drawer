@@ -1,5 +1,5 @@
 import React from "react";
-import Sketch from "react-p5/@types";
+import Sketch from "react-p5";
 import type P5 from "p5";
 
 let init = false;
