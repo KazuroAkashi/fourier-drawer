@@ -14,8 +14,8 @@ export default function App() {
   };
 
   const draw = (p5: P5) => {
-    p5.background(0);
     p5.clear();
+    p5.background(0);
 
     p5.ellipse(400, 400, 50);
   };
