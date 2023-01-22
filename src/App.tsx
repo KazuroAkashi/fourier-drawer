@@ -2,8 +2,14 @@ import React from "react";
 import Sketch from "react-p5/@types";
 import type P5 from "p5";
 
+let init = false;
+
 export default function App() {
   const setup = (p5: P5, parent: Element) => {
+    // To avoid double initialization
+    if (init) return;
+    init = true;
+
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(parent);
   };
 
