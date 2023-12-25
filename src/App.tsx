@@ -1,6 +1,8 @@
 import React from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
+import { Fourier } from "./lib/Fourier";
+import { Complex } from "./lib/Complex";
 
 let init = false;
 
@@ -12,10 +14,27 @@ let oy = 0;
 
 let canvas: P5.Renderer;
 
+let fourier: Fourier;
+const x: Complex[] = [];
+
+let shape: Complex[] = [];
+
 function render(p5: P5, delta: number) {
     p5.push();
-    p5.translate(1000 * delta, 0);
-    p5.ellipse(0, 0, 50);
+    for (let point of x) {
+        p5.color("red");
+        p5.ellipse(point.re, point.im, 10);
+        p5.color("white");
+    }
+    p5.stroke(255);
+    for (let i = 1; i < shape.length; i++) {
+        p5.line(shape[i - 1].re, shape[i - 1].im, shape[i].re, shape[i].im);
+    }
+
+    const c = fourier.render(p5, delta);
+    shape.push(c);
+
+    if (shape.length > 10000) shape = [];
     p5.pop();
 }
 
@@ -34,14 +53,36 @@ export default function App() {
             .createCanvas(p5.displayWidth, p5.displayHeight)
             .position(-ox + p5.windowWidth / 2, -oy + p5.windowHeight / 2)
             .parent(parent);
+
+        const numdots = 50;
+        for (let i = 0; i < numdots; i++) {
+            // const re = Math.random() * 300 - 150;
+            // const im = Math.random() * 300 - 150;
+            /*const re =
+                (Math.random() * 300 + 100) * Math.cos((2 * Math.PI * i) / 20);
+            const im =
+                (Math.random() * 300 + 100) * Math.sin((2 * Math.PI * i) / 20);
+            */
+
+            // r(t) = 1 - 2*sint
+            const angle = ((2 * Math.PI) / numdots) * i;
+            const radius = 1 + 2 * Math.sin(angle);
+
+            const re = 100 * radius * Math.cos(angle);
+            const im = 100 * radius * Math.sin(angle);
+            console.log(angle, radius);
+
+            x.push(new Complex(re, im));
+        }
+
+        fourier = new Fourier(x.length, x);
+        fourier.dft();
     };
 
     const draw = (p5: P5) => {
         p5.clear();
         p5.background(0);
         p5.translate(ox, oy);
-
-        p5.ellipse(0, 0, 50);
 
         now = Date.now();
         render(p5, (now - lastTime) / 1000);
