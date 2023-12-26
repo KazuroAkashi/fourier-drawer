@@ -1,8 +1,9 @@
-import React from "react";
+import React, { Ref, useRef } from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
 import { Fourier } from "./lib/Fourier";
 import { Complex } from "./lib/Complex";
+import { Svg } from "./lib/Svg";
 
 let init = false;
 
@@ -15,7 +16,7 @@ let oy = 0;
 let canvas: P5.Renderer;
 
 let fourier: Fourier;
-const x: Complex[] = [];
+let x: Complex[] = [];
 
 let shape: Complex[] = [];
 
@@ -70,7 +71,10 @@ export default function App() {
 
             const re = 100 * radius * Math.cos(angle);
             const im = 100 * radius * Math.sin(angle);
-            console.log(angle, radius);
+            // console.log(angle, radius);
+
+            // const re = (i / numdots) * 400 - 200;
+            // const im = -100;
 
             x.push(new Complex(re, im));
         }
@@ -91,5 +95,27 @@ export default function App() {
         p5.translate(-ox, -oy);
     };
 
-    return <Sketch setup={setup} draw={draw}></Sketch>;
+    const fileInput: Ref<HTMLInputElement> = useRef(null);
+
+    const fileChange = async () => {
+        const file = fileInput.current?.files?.[0];
+        if (file) {
+            const svg = new Svg(await file.text(), 1, 1 / 5);
+            x = svg.points;
+            fourier = new Fourier(x.length, x);
+            fourier.dft();
+        }
+    };
+
+    return (
+        <>
+            <Sketch setup={setup} draw={draw}></Sketch>
+            <input
+                type="file"
+                ref={fileInput}
+                onChange={fileChange}
+                style={{ position: "absolute" }}
+            />
+        </>
+    );
 }
