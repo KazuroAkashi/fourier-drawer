@@ -67,7 +67,7 @@ export default function App() {
 
             // r(t) = 1 - 2*sint
             const angle = ((2 * Math.PI) / numdots) * i;
-            const radius = 1 + 2 * Math.sin(angle);
+            const radius = 1 + 2 * Math.sin(angle) - Math.cos(2 * angle);
 
             const re = 100 * radius * Math.cos(angle);
             const im = 100 * radius * Math.sin(angle);
